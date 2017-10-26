@@ -1,0 +1,30 @@
+{
+  "name": "igroot-fetch",
+  "version": "1.0.9",
+  "description": "在基于 iGroot 构建的项目中发送 fetch 请求，有 restful 和 graphql 两种请求发送方式 ",
+  "main": "dist/api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel": "babel lib --out-dir dist"
+  },
+  "keywords": [
+    "igroot",
+    "restful",
+    "sl-core",
+    "graphql",
+    "http"
+  ],
+  "author": "yutao.shi",
+  "license": "ISC",
+  "dependencies": {
+    "igroot": "^0.3.5",
+    "lokka": "^1.7.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "webpack": "^3.8.1"
+  }
+}
