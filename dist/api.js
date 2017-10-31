@@ -272,10 +272,10 @@ var GraphQL = function GraphQL(client, isUrl) {
 
 var BsFetch = exports.BsFetch = function BsFetch(_ref) {
   var type = _ref.type,
-      url = _ref.url;
+      config = _ref.config;
 
-  if (type === 'restful') return new RESTful(url, true);
+  if (type === 'restful') return new RESTful(config, true);
 
-  if (type === 'graphql') return new GraphQL(url, true);
+  if (type === 'graphql') return new GraphQL(config, true);
 };
 module.exports = BsFetch;
