@@ -1,6 +1,6 @@
 {
   "name": "igroot-fetch",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "在基于 iGroot 构建的项目中发送 fetch 请求，有 restful 和 graphql 两种请求发送方式 ",
   "main": "dist/api.js",
   "scripts": {

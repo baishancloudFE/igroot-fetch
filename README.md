@@ -8,7 +8,7 @@
     const BsFetch = require('igroot-fetch')
     const graphqlApi = BsFetch({
         type: 'graphql',
-        api_options: {
+        config: {
             url: Api_Config + '/graphql/{type}/cmdb', //本示例演示graphql接口有分支的情况
             options: {
                 headers: {
@@ -28,8 +28,8 @@
 
     const restfulApi = BsFetch({
         type: 'restful',
-        api_options: {
-            url: 'xxxxxx', //本示例演示graphql接口有分支的情况
+        config: {
+            url: 'xxxxxx', 
             options: {
                 headers: {
                     Authorization: 'Bearer xxxxxx',
