@@ -216,9 +216,10 @@ var placeholder = '{type}';
 
 // Lokka 工厂
 function lokkaFactory(url, options) {
-  return new _lokka.Lokka({
+  var client = new _lokka.Lokka({
     transport: new _transport.Transport(url, options)
   });
+  return client;
 }
 
 // client 处理

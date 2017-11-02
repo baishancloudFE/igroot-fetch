@@ -84,3 +84,21 @@
                 Authorization: 'Bearer xxxxxx',
             }
         }
+#### 综合示例
+发送一个 graphql 的 query 请求，需要携带 cookie ，并在请求头中设置 jwt_token:
+
+    BsFetch(APP_CONFIG.default.apiDomain + '/graphql',{
+        headers: {
+            Authorization: 'Bearer ' + (!!(window.localStorage['jwtToken']) ? (window.localStorage['jwtToken']) : '')
+        },
+        credentials: true
+    }
+    ).query(`
+    {
+        users{
+            id
+            name
+        }
+    }`).then(res => {
+        console.log(res)
+    })
