@@ -58,7 +58,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
       credentials: options.credentials
     };
 
-    _this.endpoint = options.isUrl ? endpoint : APP_CONFIG[options.group || 'default'].apiDomain + endpoint;
+    _this.endpoint = endpoint;
     _this.handleNetErrors = options.handleNetErrors || handleNetErrors;
     _this.handleHttpErrors = options.handleHttpErrors || handleHttpErrors;
     _this.handleGraphQLErrors = options.handleGraphQLErrors || handleGraphQLErrors;

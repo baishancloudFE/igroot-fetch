@@ -6,9 +6,7 @@
 
 ## 使用
     const BsFetch = require('igroot-fetch')
-    const graphqlApi = BsFetch({
-        type: 'graphql',
-        config: {
+    const graphqlApi = BsFetch('graphql',{
             url: Api_Config + '/graphql/{type}/cmdb', //本示例演示graphql接口有分支的情况
             options: {
                 headers: {

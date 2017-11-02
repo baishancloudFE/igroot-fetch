@@ -59,17 +59,15 @@ var errorLock = false;
 // }
 
 var RESTful = function () {
-  function RESTful(configs, isUrl) {
+  function RESTful(url, configs) {
     _classCallCheck(this, RESTful);
 
-    var confType = typeof configs === 'undefined' ? 'undefined' : _typeof(configs);
-
-    if (isUrl && confType === 'string') {
-      this.url = configs;
-      return;
+    if (typeof url === 'string') {
+      this.url = url;
+      this.configs = configs;
+    } else {
+      throw new TypeError('API object constructor argument must be the object or string');
     }
-
-    if (confType === 'object') this.url = APP_CONFIG[configs.group].apiDomain + configs.url;else if (confType === 'string') this.url = APP_CONFIG.default.apiDomain + configs;else throw new TypeError('API object constructor argument must be the object or string');
   }
 
   // 按条件返回对象数组
@@ -78,10 +76,7 @@ var RESTful = function () {
   _createClass(RESTful, [{
     key: 'get',
     value: function get(data) {
-      var headers = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var fetchObj = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-      return _http_request.httpRequest.get(this.url, data, headers, fetchObj).then(function (res) {
+      return _http_request.httpRequest.get(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
         return res.json();
       }).then(function (res) {
         if (res.code !== 0) _igroot.notification.error({
@@ -100,7 +95,7 @@ var RESTful = function () {
       return function (data) {
         var showSuccessMsg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-        return _http_request.httpRequest.post(_this.url, data, {}, {}).then(function (res) {
+        return _http_request.httpRequest.post(_this.url, data, _this.configs.headers, _this.configs.fetchObj).then(function (res) {
           return res.json();
         }).then(function (json) {
           if (json.code !== 0) {
@@ -140,7 +135,7 @@ var RESTful = function () {
       return function (data) {
         var showSuccessMsg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-        return _http_request.httpRequest.put(_this2.url, data, {}, {}).then(function (res) {
+        return _http_request.httpRequest.put(_this2.url, data, _this2.configs.headers, _this2.configs.fetchObj).then(function (res) {
           return res.json();
         }).then(function (json) {
           if (json.code !== 0) {
@@ -180,7 +175,7 @@ var RESTful = function () {
       return function (data) {
         var showSuccessMsg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 
-        return _http_request.httpRequest.delete(_this3.url, data, {}, {}).then(function (res) {
+        return _http_request.httpRequest.delete(_this3.url, data, _this3.configs.headers, _this3.configs.fetchObj).then(function (res) {
           return res.json();
         }).then(function (json) {
           if (json.code !== 0) {
@@ -229,11 +224,9 @@ function lokkaFactory(url, options) {
 // client 处理
 function clientHandle(url) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var isUrl = arguments[2];
 
   if (url.indexOf(placeholder) === -1) url += '/' + placeholder;
 
-  options.isUrl = isUrl;
   var mutation = lokkaFactory(url.replace(placeholder, 'mutation'), options);
 
   delete options.handleSuccess;
@@ -253,29 +246,23 @@ function clientHandle(url) {
   return query;
 }
 
-var GraphQL = function GraphQL(client, isUrl) {
+var GraphQL = function GraphQL(url, client) {
   _classCallCheck(this, GraphQL);
 
   var type = typeof client === 'undefined' ? 'undefined' : _typeof(client);
 
   // 无 GraphQL 接口
   if (type === undefined) return;
-
-  // 无配置
-  if (type === 'string') return clientHandle(client, undefined, isUrl);
-
-  // 有配置
-  if (type === 'object') return clientHandle(client.url, client.options, isUrl);
+  return clientHandle(url, client);
 
   throw new TypeError('GraphQL Client configuration error!');
 };
 
-var BsFetch = exports.BsFetch = function BsFetch(_ref) {
-  var type = _ref.type,
-      config = _ref.config;
+var BsFetch = exports.BsFetch = function BsFetch(url) {
+  var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  if (type === 'restful') return new RESTful(config, true);
-
-  if (type === 'graphql') return new GraphQL(config, true);
+  if (url.indexOf('graphql') >= 0) return new GraphQL(url, config);
+  return new RESTful(url, config);
 };
+
 module.exports = BsFetch;
