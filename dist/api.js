@@ -90,122 +90,104 @@ var RESTful = function () {
   }, {
     key: 'post',
     value: function post(data) {
-      var _this = this;
+      return _http_request.httpRequest.post(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
+        return res.json();
+      }).then(function (json) {
+        if (json.code !== 0) {
+          // 弹出提示框
+          if (!errorLock) {
+            errorLock = true;
+            setTimeout(function () {
+              return errorLock = false;
+            }, 2000);
 
-      return function (data) {
-        var showSuccessMsg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-        return _http_request.httpRequest.post(_this.url, data, _this.configs.headers, _this.configs.fetchObj).then(function (res) {
-          return res.json();
-        }).then(function (json) {
-          if (json.code !== 0) {
-            // 弹出提示框
-            if (!errorLock) {
-              errorLock = true;
-              setTimeout(function () {
-                return errorLock = false;
-              }, 2000);
-
-              _igroot.notification.error({
-                message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
-                description: json.msg ? json.msg : json.message || ''
-              });
-            }
-          } else showSuccessMsg && _igroot.notification.success({
-            message: '请求成功',
-            description: json.msg ? json.msg : ''
-          });
-
-          return json;
-        }).catch(function (err) {
-          _igroot.notification.error({
-            message: '请求失败',
-            description: '错误信息请打开控制台查看'
-          });
-
-          throw err;
+            _igroot.notification.error({
+              message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
+              description: json.msg ? json.msg : json.message || ''
+            });
+          }
+        } else _igroot.notification.success({
+          message: '请求成功',
+          description: json.msg ? json.msg : ''
         });
-      };
+
+        return json;
+      }).catch(function (err) {
+        _igroot.notification.error({
+          message: '请求失败',
+          description: '错误信息请打开控制台查看'
+        });
+
+        throw err;
+      });
     }
   }, {
     key: 'put',
     value: function put(data) {
-      var _this2 = this;
+      return _http_request.httpRequest.put(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
+        return res.json();
+      }).then(function (json) {
+        if (json.code !== 0) {
+          // 弹出提示框
+          if (!errorLock) {
+            errorLock = true;
+            setTimeout(function () {
+              return errorLock = false;
+            }, 2000);
 
-      return function (data) {
-        var showSuccessMsg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-        return _http_request.httpRequest.put(_this2.url, data, _this2.configs.headers, _this2.configs.fetchObj).then(function (res) {
-          return res.json();
-        }).then(function (json) {
-          if (json.code !== 0) {
-            // 弹出提示框
-            if (!errorLock) {
-              errorLock = true;
-              setTimeout(function () {
-                return errorLock = false;
-              }, 2000);
-
-              _igroot.notification.error({
-                message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
-                description: json.msg ? json.msg : json.message || ''
-              });
-            }
-          } else showSuccessMsg && _igroot.notification.success({
-            message: '请求成功',
-            description: json.msg ? json.msg : ''
-          });
-
-          return json;
-        }).catch(function (err) {
-          _igroot.notification.error({
-            message: '请求失败',
-            description: '错误信息请打开控制台查看'
-          });
-
-          throw err;
+            _igroot.notification.error({
+              message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
+              description: json.msg ? json.msg : json.message || ''
+            });
+          }
+        } else _igroot.notification.success({
+          message: '请求成功',
+          description: json.msg ? json.msg : ''
         });
-      };
+
+        return json;
+      }).catch(function (err) {
+        _igroot.notification.error({
+          message: '请求失败',
+          description: '错误信息请打开控制台查看'
+        });
+
+        throw err;
+      });
     }
   }, {
     key: 'delete',
     value: function _delete(data) {
-      var _this3 = this;
+      return _http_request.httpRequest.delete(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
+        return res.json();
+      }).then(function (json) {
+        if (json.code !== 0) {
+          // 弹出提示框
+          if (!errorLock) {
+            errorLock = true;
+            setTimeout(function () {
+              return errorLock = false;
+            }, 2000);
 
-      return function (data) {
-        var showSuccessMsg = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-        return _http_request.httpRequest.delete(_this3.url, data, _this3.configs.headers, _this3.configs.fetchObj).then(function (res) {
-          return res.json();
-        }).then(function (json) {
-          if (json.code !== 0) {
-            // 弹出提示框
-            if (!errorLock) {
-              errorLock = true;
-              setTimeout(function () {
-                return errorLock = false;
-              }, 2000);
-
-              _igroot.notification.error({
-                message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
-                description: json.msg ? json.msg : json.message || ''
-              });
-            }
-          } else showSuccessMsg && _igroot.notification.success({
-            message: '请求成功',
-            description: json.msg ? json.msg : ''
-          });
-
-          return json;
-        }).catch(function (err) {
-          _igroot.notification.error({
-            message: '请求失败',
-            description: '错误信息请打开控制台查看'
-          });
-
-          throw err;
+            _igroot.notification.error({
+              message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
+              description: json.msg ? json.msg : json.message || ''
+            });
+          }
+        } else _igroot.notification.success({
+          message: '请求成功',
+          description: json.msg ? json.msg : ''
         });
-      };
+
+        return json;
+      }).catch(function (err) {
+        _igroot.notification.error({
+          message: '请求失败',
+          description: '错误信息请打开控制台查看'
+        });
+
+        throw err;
+      });
     }
   }]);
 
