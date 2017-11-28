@@ -244,8 +244,15 @@ var GraphQL = function GraphQL(url, client) {
 var BsFetch = exports.BsFetch = function BsFetch(url) {
   var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  if (url.indexOf('graphql') >= 0) return new GraphQL(url, config);
-  return new RESTful(url, config);
+  var token = window.localStorage['JWT_TOKEN'] || '' || window.localStorage['jwtToken'] || '';
+  var _config = {
+    headers: {
+      Authorization: 'Bearer ' + token
+    }
+  };
+  _config = Object.assign({}, _config, config);
+  if (url.indexOf('graphql') >= 0) return new GraphQL(url, _config);
+  return new RESTful(url, _config);
 };
 
 module.exports = BsFetch;
