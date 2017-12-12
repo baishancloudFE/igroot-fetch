@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -11,19 +11,20 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
  */
 var request = function request(method) {
   return function (url, data) {
-    var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var fetchObj = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     // 默认的传输格式为 JSON
     var body = !!data ? JSON.stringify(data) : undefined;
 
+    if (method === 'post') {
+      options.headers = Object.assign({}, {
+        "Content-Type": "application/json"
+      }, options.headers);
+    }
     return fetch(url, _extends({
       method: method,
-      body: body,
-      credentials: 'omit',
-      mode: 'cors',
-      headers: headers
-    }, fetchObj));
+      body: body
+    }, options));
   };
 };
 
@@ -37,20 +38,16 @@ var httpRequest = exports.httpRequest = {
    */
   get: function get(url) {
     var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-    var headers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-    var fetchObj = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+    var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     var keys = Object.keys(data);
-    var params = keys.length !== 0 ? '?' + keys.map(function (key) {
-      return key + '=' + data[key];
+    var params = keys.length !== 0 ? "?" + keys.map(function (key) {
+      return key + "=" + data[key];
     }).join('&') : '';
 
-    return fetch('' + url + params, _extends({
-      method: 'GET',
-      credentials: 'omit',
-      mode: 'cors',
-      headers: headers
-    }, fetchObj));
+    return fetch("" + url + params, _extends({
+      method: 'GET'
+    }, options));
   },
 
 

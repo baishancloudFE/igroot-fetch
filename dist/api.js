@@ -70,13 +70,24 @@ var RESTful = function () {
     }
   }
 
-  // 按条件返回对象数组
-
-
   _createClass(RESTful, [{
+    key: '_buildOptions',
+    value: function _buildOptions() {
+      // 默认设置
+      var options = {};
+      this.configs.headers && (options.headers = this.configs.headers);
+      this.configs.mode && (options.mode = this.configs.mode);
+      this.configs.credentials && (options.credentials = 'include');
+
+      return options;
+    }
+
+    // 按条件返回对象数组
+
+  }, {
     key: 'get',
     value: function get(data) {
-      return _http_request.httpRequest.get(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
+      return _http_request.httpRequest.get(this.url, data, this._buildOptions()).then(function (res) {
         return res.json();
       }).then(function (res) {
         if (res.code !== 0) _igroot.notification.error({
@@ -90,7 +101,7 @@ var RESTful = function () {
   }, {
     key: 'post',
     value: function post(data) {
-      return _http_request.httpRequest.post(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
+      return _http_request.httpRequest.post(this.url, data, this._buildOptions()).then(function (res) {
         return res.json();
       }).then(function (json) {
         if (json.code !== 0) {
@@ -124,7 +135,7 @@ var RESTful = function () {
   }, {
     key: 'put',
     value: function put(data) {
-      return _http_request.httpRequest.put(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
+      return _http_request.httpRequest.put(this.url, data, this._buildOptions()).then(function (res) {
         return res.json();
       }).then(function (json) {
         if (json.code !== 0) {
@@ -158,7 +169,7 @@ var RESTful = function () {
   }, {
     key: 'delete',
     value: function _delete(data) {
-      return _http_request.httpRequest.delete(this.url, data, this.configs.headers, this.configs.fetchObj).then(function (res) {
+      return _http_request.httpRequest.delete(this.url, data, this._buildOptions()).then(function (res) {
         return res.json();
       }).then(function (json) {
         if (json.code !== 0) {
