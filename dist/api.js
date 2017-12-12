@@ -244,13 +244,13 @@ var GraphQL = function GraphQL(url, client) {
 var BsFetch = exports.BsFetch = function BsFetch(url) {
   var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  var token = window.localStorage['JWT_TOKEN'] || window.localStorage['jwtToken'] || '';
-  var _config = {
-    headers: {
-      Authorization: 'Bearer ' + token
-    }
-  };
-  _config = Object.assign({}, _config, config);
+  // const token = window.localStorage['JWT_TOKEN'] || window.localStorage['jwtToken'] || ''
+  // let _config = {
+  //   headers: {
+  //     Authorization: `Bearer ${token}`
+  //   }
+  // }
+  // _config = Object.assign({}, _config, config)
 
   var type = 'restful';
   if (!!config.type) {
@@ -260,9 +260,9 @@ var BsFetch = exports.BsFetch = function BsFetch(url) {
   }
 
   if (type === 'graphql') {
-    return new GraphQL(url, _config);
+    return new GraphQL(url, config);
   }
-  return new RESTful(url, _config);
+  return new RESTful(url, config);
 };
 
 module.exports = BsFetch;
