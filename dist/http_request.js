@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -16,7 +16,7 @@ var request = function request(method) {
     // 默认的传输格式为 JSON
     var body = !!data ? JSON.stringify(data) : undefined;
 
-    if (method === 'post') {
+    if (method === 'post' || method === 'POST') {
       options.headers = Object.assign({}, {
         "Content-Type": "application/json"
       }, options.headers);
@@ -41,11 +41,11 @@ var httpRequest = exports.httpRequest = {
     var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
     var keys = Object.keys(data);
-    var params = keys.length !== 0 ? "?" + keys.map(function (key) {
-      return key + "=" + data[key];
+    var params = keys.length !== 0 ? '?' + keys.map(function (key) {
+      return key + '=' + data[key];
     }).join('&') : '';
 
-    return fetch("" + url + params, _extends({
+    return fetch('' + url + params, _extends({
       method: 'GET'
     }, options));
   },
