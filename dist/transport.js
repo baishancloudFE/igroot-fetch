@@ -115,7 +115,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
 
         return data;
       }).catch(function (err) {
-        return _this2.handleNetErrors;
+        return _this2.handleNetErrors(err);
       });
     }
   }]);
