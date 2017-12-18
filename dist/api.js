@@ -5,9 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BsFetch = undefined;
 
+var _notification11 = require('igroot/lib/notification');
+
+var _notification12 = _interopRequireDefault(_notification11);
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+require('igroot/lib/notification/style');
 
 var _lokka = require('lokka');
 
@@ -15,7 +21,7 @@ var _transport = require('./transport');
 
 var _http_request = require('./http_request');
 
-var _igroot = require('igroot');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -90,7 +96,7 @@ var RESTful = function () {
       return _http_request.httpRequest.get(this.url, data, this._buildOptions()).then(function (res) {
         return res.json();
       }).then(function (res) {
-        if (res.code !== 0) _igroot.notification.error({
+        if (res.code !== 0) _notification12.default.error({
           message: '\u8BF7\u6C42\u5931\u8D25 code: ' + res.code,
           description: res.msg ? res.msg : res.message || ''
         });
@@ -112,19 +118,19 @@ var RESTful = function () {
               return errorLock = false;
             }, 2000);
 
-            _igroot.notification.error({
+            _notification12.default.error({
               message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
               description: json.msg ? json.msg : json.message || ''
             });
           }
-        } else _igroot.notification.success({
+        } else _notification12.default.success({
           message: '请求成功',
           description: json.msg ? json.msg : ''
         });
 
         return json;
       }).catch(function (err) {
-        _igroot.notification.error({
+        _notification12.default.error({
           message: '请求失败',
           description: '错误信息请打开控制台查看'
         });
@@ -146,19 +152,19 @@ var RESTful = function () {
               return errorLock = false;
             }, 2000);
 
-            _igroot.notification.error({
+            _notification12.default.error({
               message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
               description: json.msg ? json.msg : json.message || ''
             });
           }
-        } else _igroot.notification.success({
+        } else _notification12.default.success({
           message: '请求成功',
           description: json.msg ? json.msg : ''
         });
 
         return json;
       }).catch(function (err) {
-        _igroot.notification.error({
+        _notification12.default.error({
           message: '请求失败',
           description: '错误信息请打开控制台查看'
         });
@@ -180,19 +186,19 @@ var RESTful = function () {
               return errorLock = false;
             }, 2000);
 
-            _igroot.notification.error({
+            _notification12.default.error({
               message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
               description: json.msg ? json.msg : json.message || ''
             });
           }
-        } else _igroot.notification.success({
+        } else _notification12.default.success({
           message: '请求成功',
           description: json.msg ? json.msg : ''
         });
 
         return json;
       }).catch(function (err) {
-        _igroot.notification.error({
+        _notification12.default.error({
           message: '请求失败',
           description: '错误信息请打开控制台查看'
         });
