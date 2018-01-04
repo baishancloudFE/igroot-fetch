@@ -64,7 +64,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
     _this.handleNetErrors = options.handleNetErrors || handleNetErrors;
     _this.handleHttpErrors = options.handleHttpErrors || handleHttpErrors;
     _this.handleGraphQLErrors = options.handleGraphQLErrors || handleGraphQLErrors;
-    _this.handleSuccess = options.handleSuccess || function () {};
+    _this.handleSuccess = options.handleSuccess || function () { };
     return _this;
   }
 
@@ -99,13 +99,14 @@ var Transport = exports.Transport = function (_LokkaTransport) {
       var options = this._buildOptions(payload);
 
       return fetch(this.endpoint, options).then(function (response) {
+        console.log(response)
         // HTTP 错误处理
         if (response.status !== 200) _this2.handleHttpErrors(response);
 
         return response.json();
       }).then(function (_ref) {
         var data = _ref.data,
-            errors = _ref.errors;
+          errors = _ref.errors;
 
         // GraphQL 错误处理
         if (errors) {
