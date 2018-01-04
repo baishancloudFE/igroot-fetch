@@ -95,7 +95,7 @@ var RESTful = function () {
           //   message: `请求失败 code: ${res.code}`,
           //   description: res.msg ? res.msg : res.message || ''
           // })
-          console.log('请求失败');
+          console.log('\u8BF7\u6C42\u5931\u8D25 code: ' + res.code + ',msg:' + (res.msg ? res.msg : res.message || ''));
 
         return res;
       });
@@ -118,14 +118,14 @@ var RESTful = function () {
             //   message: `请求失败 code: ${json.code}`,
             //   description: json.msg ? json.msg : json.message || ''
             // })
-            console.log(json.msg);
+            console.log('\u8BF7\u6C42\u5931\u8D25 code: ' + json.code + ',msg:' + (json.msg ? json.msg : json.message || ''));
           }
         } else
           // notification.success({
           //   message: '请求成功',
           //   description: json.msg ? json.msg : ''
           // })
-          console.log(json.msg);
+          console.log('\u8BF7\u6C42\u6210\u529F code: ' + json.code + ',msg:' + (json.msg ? json.msg : json.message || ''));
 
         return json;
       }).catch(function (err) {
@@ -133,7 +133,7 @@ var RESTful = function () {
         //   message: '请求失败',
         //   description: '错误信息请打开控制台查看'
         // })
-        console.log(json.msg);
+        console.log('\u8BF7\u6C42\u5931\u8D25 \u9519\u8BEF\u4FE1\u606F\u8BF7\u6253\u5F00\u63A7\u5236\u53F0\u67E5\u770B');
 
         throw err;
       });
@@ -156,14 +156,14 @@ var RESTful = function () {
             //   message: `请求失败 code: ${json.code}`,
             //   description: json.msg ? json.msg : json.message || ''
             // })
-            console.log(json.msg);
+            console.log('\u8BF7\u6C42\u5931\u8D25 code: ' + json.code + ',msg:' + (json.msg ? json.msg : json.message || ''));
           }
         } else
           // notification.success({
           //   message: '请求成功',
           //   description: json.msg ? json.msg : ''
           // })
-          console.log(json.msg);
+          console.log('\u8BF7\u6C42\u6210\u529F code: ' + json.code + ',msg:' + (json.msg ? json.msg : json.message || ''));
 
         return json;
       }).catch(function (err) {
@@ -171,7 +171,7 @@ var RESTful = function () {
         //   message: '请求失败',
         //   description: '错误信息请打开控制台查看'
         // })
-        console.log('请求失败');
+        console.log('\u8BF7\u6C42\u5931\u8D25 \u9519\u8BEF\u4FE1\u606F\u8BF7\u6253\u5F00\u63A7\u5236\u53F0\u67E5\u770B');
 
         throw err;
       });
@@ -194,14 +194,14 @@ var RESTful = function () {
             //   message: `请求失败 code: ${json.code}`,
             //   description: json.msg ? json.msg : json.message || ''
             // })
-            console.log(json.msg);
+            console.log('\u8BF7\u6C42\u5931\u8D25 code: ' + json.code + ',msg:' + (json.msg ? json.msg : json.message || ''));
           }
         } else
           // notification.success({
           //   message: '请求成功',
           //   description: json.msg ? json.msg : ''
           // })
-          console.log('请求成功');
+          console.log('\u8BF7\u6C42\u6210\u529F code: ' + json.code + ',msg:' + (json.msg ? json.msg : json.message || ''));
 
         return json;
       }).catch(function (err) {
@@ -209,7 +209,7 @@ var RESTful = function () {
         //   message: '请求失败',
         //   description: '错误信息请打开控制台查看'
         // })
-        console.log('错误信息请打开控制台查看');
+        console.log('\u8BF7\u6C42\u5931\u8D25 \u9519\u8BEF\u4FE1\u606F\u8BF7\u6253\u5F00\u63A7\u5236\u53F0\u67E5\u770B');
         throw err;
       });
     }
