@@ -1,10 +1,15 @@
 var assert = require('assert')
+var expect = require('chai').expect
 var BsFetch = require('../dist/api')
 
-console.log(BsFetch)
-
 describe('测试get请求', function () {
-    it('should return -1 when the value is not present', function () {
-        assert.equal([1, 2, 3].indexOf(4), -1)
-    })
+
+    it('get请求应该返回一个对象', function () {
+        return BsFetch('http://172.18.9.36:8001/base/nodenamemap')
+            .get()
+            .then(function (json) {
+                console.log(json)
+                expect(json).to.be.an('object');
+            });
+    });
 })
