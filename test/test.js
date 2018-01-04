@@ -1,16 +1,10 @@
-const BsFetch = require('igroot-fetch')
+var assert = require('assert')
+var BsFetch = require('../dist/api')
 
-describe("A suite", function () {
-    it("contains spec with an expectation", function () {
-        expect(
-            BsFetch('http://172.18.11.112:11000/region/select?country=&', {
-                headers: {
-                    Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTcyLjE4LjExLjExMjoxMTAwMC9hY2NvdW50L3VzZXIvdmlldyIsImlhdCI6MTUxMTc4MzA2OCwiZXhwIjoxNTExODY5NDY4LCJuYmYiOjE1MTE3ODMwNjgsImp0aSI6InVMVThPN1l2bTk3UXdsZjciLCJzdWIiOnsidWlkIjozMDQ2OCwic2lkIjoiNWExYmZhOWFlY2FmZSIsIm5hbWUiOiJ5dWFueWFuZy53YW5nIiwiY25hbWUiOiJcdTczOGJcdThmZGNcdTZkMGIiLCJhdXRoIjoiZUp3ek1BQURRME5EQTBNd3cyQkVBUUR2SUMvVyIsInJlc291cmNlcyI6ImVKd3pNREF3TkJpNUFBRHJWQy9TIn0sInBydiI6ImYxMzFhOTNkZTgwZjE4ZDkwMjk2N2YwYzRiYTRlNDQxNGE3NTYxMjcifQ.dOSEkaQH7htUuUCLj1GYtBlLwWphqAt_Ke_xZPIKwwQ'
-                }
-            }).get()
-                .then(res => {
-                    return res
-                })
-        ).toBe(res);
-    });
-});
+console.log(BsFetch)
+
+describe('测试get请求', function () {
+    it('should return -1 when the value is not present', function () {
+        assert.equal([1, 2, 3].indexOf(4), -1)
+    })
+})

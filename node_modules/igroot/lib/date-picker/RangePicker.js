@@ -134,7 +134,9 @@ var RangePicker = function (_React$Component) {
             props.onChange(value, [formatValue(value[0], props.format), formatValue(value[1], props.format)]);
         };
         _this.handleOpenChange = function (open) {
-            _this.setState({ open: open });
+            if (!('open' in _this.props)) {
+                _this.setState({ open: open });
+            }
             var onOpenChange = _this.props.onOpenChange;
 
             if (onOpenChange) {
@@ -166,7 +168,7 @@ var RangePicker = function (_React$Component) {
                 return _react2['default'].createElement(
                     'a',
                     { key: range, onClick: function onClick() {
-                            return _this.setValue(value);
+                            return _this.setValue(value, true);
                         }, onMouseEnter: function onMouseEnter() {
                             return _this.setState({ hoverValue: value });
                         }, onMouseLeave: _this.clearHoverValue },
@@ -213,9 +215,9 @@ var RangePicker = function (_React$Component) {
         }
     }, {
         key: 'setValue',
-        value: function setValue(value) {
+        value: function setValue(value, hidePanel) {
             this.handleChange(value);
-            if (!this.props.showTime) {
+            if ((hidePanel || !this.props.showTime) && !('open' in this.props)) {
                 this.setState({ open: false });
             }
         }

@@ -34,8 +34,7 @@ var __rest = undefined && undefined.__rest || function (s, e) {
 var ButtonGroup = function ButtonGroup(props) {
     var _props$prefixCls = props.prefixCls,
         prefixCls = _props$prefixCls === undefined ? 'ant-btn-group' : _props$prefixCls,
-        _props$size = props.size,
-        size = _props$size === undefined ? '' : _props$size,
+        size = props.size,
         className = props.className,
         others = __rest(props, ["prefixCls", "size", "className"]);
     // large => lg
