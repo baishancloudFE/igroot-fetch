@@ -3,5 +3,11 @@
     "es2015",
     "stage-3"
   ],
-  "plugins": []
+  "plugins": [[
+    "import",
+    {
+      "libraryName": "igroot",
+      "style": "css"
+    }
+  ]]
 }

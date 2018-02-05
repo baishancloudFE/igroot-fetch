@@ -5,9 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Fetch = undefined;
 
+var _notification5 = require('igroot/lib/notification');
+
+var _notification6 = _interopRequireDefault(_notification5);
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+require('igroot/lib/notification/style/css');
 
 var _lokka = require('lokka');
 
@@ -15,7 +21,7 @@ var _transport = require('./transport');
 
 var _http_request = require('./http_request');
 
-var _igroot = require('igroot');
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -43,19 +49,19 @@ function warp(method) {
             return errorLock = false;
           }, 2000);
 
-          _igroot.notification.error({
+          _notification6.default.error({
             message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
             description: json.msg ? json.msg : json.message || ''
           });
         }
-      } else _igroot.notification.success({
+      } else _notification6.default.success({
         message: '请求成功',
         description: json.msg ? json.msg : ''
       });
 
       return json;
     }).catch(function (err) {
-      _igroot.notification.error({
+      _notification6.default.error({
         message: '请求失败',
         description: '错误信息请打开控制台查看'
       });
@@ -101,7 +107,7 @@ var RESTful = function () {
       return _http_request.httpRequest.get(this.url, data, this._buildOptions()).then(function (res) {
         return res.json();
       }).then(function (res) {
-        if (res.code !== 0) _igroot.notification.error({
+        if (res.code !== 0) _notification6.default.error({
           message: '\u8BF7\u6C42\u5931\u8D25 code: ' + res.code,
           description: res.msg ? res.msg : res.message || ''
         });
@@ -174,10 +180,10 @@ var Fetch = exports.Fetch = function Fetch(url) {
 
   // 如果不是完整的 url 就给它加上域名
   if (!urlRegxp.test(url)) {
-    var host = window.location.host;
-
     // 判断是否有默认域名缓存，如果没有就拿当前的域名遍历匹配，寻找相应的接口地址
     if (!defaultDomain) {
+      var host = window.location.host;
+
       Object.keys(Fetch.domain).forEach(function (domain) {
         var condition = Fetch.domain[domain];
 
