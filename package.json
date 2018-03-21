@@ -18,7 +18,6 @@
   "author": "yutao.shi, yizhen.fan",
   "license": "ISC",
   "dependencies": {
-    "igroot": "^0.3.5",
     "lokka": "^1.7.0"
   },
   "devDependencies": {
