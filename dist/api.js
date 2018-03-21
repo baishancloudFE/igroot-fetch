@@ -5,27 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Fetch = undefined;
 
-var _notification5 = require('igroot/lib/notification');
-
-var _notification6 = _interopRequireDefault(_notification5);
-
-var _notification11 = require('igroot/lib/notification');
-
-var _notification12 = _interopRequireDefault(_notification11);
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-require('igroot/lib/notification/style/css');
 
 var _lokka = require('lokka');
 
 var _transport = require('./transport');
 
 var _http_request = require('./http_request');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -34,43 +22,30 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // URL 完整性校验
 var urlRegxp = /^https?:\/\//;
 
-// error 弹出锁, 避免弹出框过多
-var errorLock = false;
-
 // 域名缓存，避免每次请求都去匹配域名
 var defaultDomain = void 0;
 
+// 默认网络错误处理
+function handleNetErrors(error) {
+  throw error;
+}
+
+// 默认 HTTP 错误处理
+function handleHttpErrors(response) {
+  if (response.code !== 0) throw new Error('Invalid status code: ' + response);
+}
+
 function warp(method) {
   return function (data) {
+    var _this = this;
+
     return _http_request.httpRequest.post(this.url, data, this._buildOptions()).then(function (res) {
       return res.json();
-    }).then(function (json) {
-      if (json.code !== 0) {
-        // 弹出提示框
-        if (!errorLock) {
-          errorLock = true;
-          setTimeout(function () {
-            return errorLock = false;
-          }, 2000);
-
-          _notification6.default.error({
-            message: '\u8BF7\u6C42\u5931\u8D25 code: ' + json.code,
-            description: json.msg ? json.msg : json.message || ''
-          });
-        }
-      } else _notification6.default.success({
-        message: '请求成功',
-        description: json.msg ? json.msg : ''
-      });
-
-      return json;
+    }).then(function (res) {
+      _this.handleHttpErrors(res);
+      return res;
     }).catch(function (err) {
-      _notification6.default.error({
-        message: '请求失败',
-        description: '错误信息请打开控制台查看'
-      });
-
-      throw err;
+      return _this.handleNetErrors(err);
     });
   };
 }
@@ -99,6 +74,8 @@ var RESTful = function () {
       this.configs.headers && (options.headers = this.configs.headers);
       this.configs.mode && (options.mode = this.configs.mode);
       this.configs.credentials && (options.credentials = 'include');
+      this.handleNetErrors = this.configs.handleNetErrors || handleNetErrors;
+      this.handleHttpErrors = this.configs.handleHttpErrors || handleHttpErrors;
 
       return options;
     }
@@ -108,15 +85,15 @@ var RESTful = function () {
   }, {
     key: 'get',
     value: function get(data) {
+      var _this2 = this;
+
       return _http_request.httpRequest.get(this.url, data, this._buildOptions()).then(function (res) {
         return res.json();
       }).then(function (res) {
-        if (res.code !== 0) _notification6.default.error({
-          message: '\u8BF7\u6C42\u5931\u8D25 code: ' + res.code,
-          description: res.msg ? res.msg : res.message || ''
-        });
-
+        _this2.handleHttpErrors(res);
         return res;
+      }).catch(function (err) {
+        return _this2.handleNetErrors(err);
       });
     }
   }]);
@@ -220,4 +197,5 @@ Fetch.setDomain = function setDomain(domain) {
   throw new TypeError('\'domain\' type must be a string or object!');
 };
 
-module.exports = Fetch;
+// module.exports = Fetch
+exports.default = Fetch;
