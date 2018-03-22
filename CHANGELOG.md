@@ -29,7 +29,10 @@
         "http://server.xx.com": /localhost|172\.18\.11\.11/,
     })
     // 或者
-    Fetch.setDomain("http://server.xx.com",{
+    Fetch.setDomain("http://server.xx.com")
+
+    // 针对 graphql 请求
+    window.Client = Fetch('/graphql',{
         headers: {
             Authorization: 'xxxx'
         },
@@ -39,9 +42,6 @@
             }
         },
     })
-
-    // 针对 graphql 请求
-    window.Client = Fetch('/graphql')
     // 然后在项目中直接使用
     Client.query(`xxxx`).then(res=>{})
 
