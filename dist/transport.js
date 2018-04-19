@@ -63,6 +63,8 @@ var Transport = exports.Transport = function (_LokkaTransport) {
     _this.handleHttpErrors = options.handleHttpErrors || handleHttpErrors;
     _this.handleGraphQLErrors = options.handleGraphQLErrors || handleGraphQLErrors;
     _this.handleSuccess = options.handleSuccess || function () {};
+
+    _this.extra = { pagination: {} };
     return _this;
   }
 
@@ -100,6 +102,13 @@ var Transport = exports.Transport = function (_LokkaTransport) {
         // HTTP 错误处理
         if (response.status !== 200) _this2.handleHttpErrors(response);
 
+        // 获取头部分页信息
+        _this2.extra.pagination = {};
+        response.headers.forEach(function (val, key) {
+          _this2.extra.pagination[key] = val;
+        });
+        // end
+
         return response.json();
       }).then(function (_ref) {
         var data = _ref.data,
@@ -113,7 +122,9 @@ var Transport = exports.Transport = function (_LokkaTransport) {
           _this2.handleSuccess(data);
         }
 
-        return data;
+        //返回所需数据和头部信息
+        return Object.assign(data, _this2.extra);
+        // return data
       }).catch(function (err) {
         return _this2.handleNetErrors(err);
       });
