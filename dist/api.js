@@ -32,7 +32,7 @@ function handleNetErrors(error) {
 
 // 默认 HTTP 错误处理
 function handleHttpErrors(response) {
-  if (response.code !== 0) throw new Error('Invalid status code: ' + response);
+  if (response.code !== 0) console.log(response);
 }
 
 function warp(method) {
@@ -173,7 +173,7 @@ var Fetch = exports.Fetch = function Fetch(url) {
         }
       });
 
-      if (!defaultDomain) throw new Error('Can not match the api domain! Please check your api domain config.');
+      // if (!defaultDomain) throw new Error('Can not match the api domain! Please check your api domain config.')
     }
 
     url = defaultDomain + url;
@@ -187,9 +187,10 @@ var Fetch = exports.Fetch = function Fetch(url) {
 
 Fetch.setDomain = function setDomain(domain) {
   if (typeof domain === 'string') {
-    if (urlRegxp.test(domain)) return Fetch.domain = _defineProperty({}, domain, /.*/);
+    // if (urlRegxp.test(domain))
+    return Fetch.domain = _defineProperty({}, domain, /.*/);
 
-    throw new Error('\'domain\' string must be \'http://\' or \'https://\' at the beginning.');
+    // throw new Error('\'domain\' string must be \'http://\' or \'https://\' at the beginning.')
   }
 
   if ((typeof domain === 'undefined' ? 'undefined' : _typeof(domain)) === 'object') return Fetch.domain = domain;
