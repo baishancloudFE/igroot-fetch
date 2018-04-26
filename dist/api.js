@@ -151,28 +151,21 @@ var GraphQL = function GraphQL(url, client) {
 var Fetch = exports.Fetch = function Fetch(url) {
   var config = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  // const token = window.localStorage['JWT_TOKEN'] || window.localStorage['jwtToken'] || ''
-  // let _config = {
-  //   headers: {
-  //     Authorization: `Bearer ${token}`
-  //   }
-  // }
-  // _config = Object.assign({}, _config, config)
-
   // 如果不是完整的 url 就给它加上域名
   if (!urlRegxp.test(url)) {
     // 判断是否有默认域名缓存，如果没有就拿当前的域名遍历匹配，寻找相应的接口地址
     if (!defaultDomain) {
-      var host = window.location.host;
-
-      Object.keys(Fetch.domain).forEach(function (domain) {
-        var condition = Fetch.domain[domain];
-
-        if (typeof condition === 'string' && condition === host || condition instanceof RegExp && condition.test(window.location.host)) {
-          defaultDomain = domain;
-        }
-      });
-
+      if (Fetch.domain) {
+        var host = window.location.host;
+        Object.keys(Fetch.domain).forEach(function (domain) {
+          var condition = Fetch.domain[domain];
+          if (typeof condition === 'string' && condition === host || condition instanceof RegExp && condition.test(window.location.host)) {
+            defaultDomain = domain;
+          }
+        });
+      } else {
+        defaultDomain = "";
+      }
       // if (!defaultDomain) throw new Error('Can not match the api domain! Please check your api domain config.')
     }
 
