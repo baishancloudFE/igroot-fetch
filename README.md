@@ -2,71 +2,106 @@
 在基于 iGroot 构建的项目中发送 fetch 请求，有 restful 和 graphql 两种请求发送方式
 
 ## 安装
+
+```jsx
     npm install --save igroot-fetch
     或者
     bower install igroot-fetch
     或者
     yarn add igroot-fetch
+```
 
 ## 使用
-    const BsFetch = require('igroot-fetch')
+
+```jsx
+    const igrootFetch = require('igroot-fetch')
     或者
-    import BsFetch from('igroot-fetch')
-    
-#### get 请求
-    BsFetch(url).get().then(res=>{
-      console.log(res)
-    })
-    若有get参数：
-    const params={
-      name:'fanyizhen',
-      gender:'female'
-    }
-    BsFetch(url).get(params).then(res=>{
-      console.log(res)
-    })
-#### post 请求
-    const postBody={
-      name:'fanyizhen',
-      gender:'female'
-    }
-    BsFetch(url).post(postBody).then(res=>{
-      console.log(res)
-    })
-#### put 请求
-#### delete 请求
-#### query 请求( graphQL 类型的接口)
+    import igrootFetch from('igroot-fetch')
+```
 
-    BsFetch(url).query(`
-    {
-        users{
-            id
-            name
+#### restful 类型的请求
+
+> restful 类型的请求底层采用 axios 库，想要查看更详细的文档，可以参考 [axios的官方文档]('https://github.com/axios/axios')
+
+```jsx
+import igrootFetch from 'igroot-fetch'
+const restApi = igrootFetch(host,config)
+
+// 发送get请求
+restApi.get(resourceUrl)
+    .then(res=>{
+        // 您的业务代码
+    })
+    .catch(err=>{
+        // 错误处理
+    })
+
+// 发送post请求
+restApi.post(resourceUrl,paramsBody)
+    .then(res=>{
+        // 您的业务代码
+    })
+    .catch(err=>{
+        // 错误处理
+    })
+
+// 发送delete请求
+restApi.delete(resourceUrl)
+    .then(res=>{
+        // 您的业务代码
+    })
+    .catch(err=>{
+        // 错误处理
+    })
+
+// 还有其余类型的请求可以参照 axios 的官方文档
+```
+
+#### graphQL 类型的请求
+
+```jsx
+import igrootFetch from 'igroot-fetch'
+const graphQLApi = igrootFetch(host+'/graghql',{
+    handleHttpErrors: function (response) {
+        notification.error({ message: 'Http Error', description: response.statusText })
+        if (response.status === 401) {
+        onTokenInvalid(domain)
         }
-    }`).then(res => {
-            console.log(res)
-        })
-#### mutate 请求( graphQL 类型的接口)
+    },
 
-    const graphqlApi = BsFetch(url)
-    const updateResult = graphqlApi.createFragment(`
-        fragment on UpdateResult {
+    handleGraphQLErrors: function (errors, data) {
+        const { message } = errors[0]
+        notification.error({ message: 'GraphQL Error', description: message })
+    }
+})
+
+// query
+graphQLApi.query(`
+{
+    users{
+        id
+        name
+    }
+}`).then(res => {
+        console.log(res)
+    })
+
+// mutate
+graphQLApi.mutate(`
+    {
+        update_user(
+            id:5,
+            apps:[1,4,5]
+        ){
             value
         }
-    `)
-    graphqlApi.mutate(`
-        {
-            update_user(
-                id:5,
-                apps:[1,4,5]
-            ){
-                ...${updateResult}
-            }
-        }
-    `).then(res => {
-            console.log(res)
-        })
-#### 特殊配置项
+    }
+`).then(res => {
+        console.log(res)
+    })
+```
+
+#### 特殊说明
 
 - 若 graphQL 接口有分支
   - 例如，请求路径为 APP_CONFIG.default.apiDomain + '/graphql'，当前请求的是该接口的cmdb分支，则请求地址写成 APP_CONFIG.default.apiDomain + '/graphql/{type}/cmdb'
@@ -84,21 +119,26 @@
                 Authorization: 'Bearer xxxxxx',
             }
         }
-#### 综合示例
-发送一个 graphql 的 query 请求，需要携带 cookie ，并在请求头中设置 jwt_token:
 
-    BsFetch(APP_CONFIG.default.apiDomain + '/graphql',{
-        headers: {
-            Authorization: 'Bearer ' + (!!(window.localStorage['jwtToken']) ? (window.localStorage['jwtToken']) : '')
-        },
-        credentials: true
-    }
-    ).query(`
-    {
-        users{
-            id
-            name
-        }
-    }`).then(res => {
-        console.log(res)
-    })
+#### config配置项
+> 如有疑问可以直接咨询 范溢贞(tel:18106987196,qq:614235948)
+
+| 参数        | 说明    |  类型  |  默认值
+| --------   | -----:   | :----: |  :----: |
+| headers     | 请求头      |   object   | -
+| needAuth| 是否需要在请求头中配置jwt认证信息,默认配置jwttoken实时从localStorage中读取     |   boolean    | true
+| handleNetErrors    |   处理网络错误    |   function    | (error)=> {throw error}
+| handleHttpErrors  |   处理HTTP错误    |   function    | (error)=> {throw error}
+| handleGraphQLErrors   |   处理GraphQL错误    |   function    | 见下方
+| handleSuccess   |   成功后的反馈，一般不会用到     |   function    | -
+| credentials    |   发送请求时是否携带cookie    |   boolean    | true
+
+```jsx
+handleGraphQLErrors=(errors, data)=> {
+  const { message } = errors[0]
+  const error = new Error(`GraphQL Error: ${message}`)
+  error.rawError = errors
+  error.rawData = data
+  throw error
+}
+```

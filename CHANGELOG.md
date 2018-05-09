@@ -60,3 +60,7 @@
     ``` 
 
 - 1.2.3：在返回结果中加上分页信息
+
+- 1.3.0：token实时从localStorage中读取
+
+- 1.3.1：restful部分改用axios；

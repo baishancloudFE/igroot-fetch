@@ -64,6 +64,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
     _this.handleGraphQLErrors = options.handleGraphQLErrors || handleGraphQLErrors;
     _this.handleSuccess = options.handleSuccess || function () {};
 
+    _this.needAuth = typeof options.needAuth === 'boolean' ? options.needAuth : true;
     _this.extra = { pagination: {} };
     return _this;
   }
@@ -86,7 +87,8 @@ var Transport = exports.Transport = function (_LokkaTransport) {
 
       if (this._httpOptions.credentials === false) delete options.credentials;
 
-      Object.assign(options.headers, this._httpOptions.headers);
+      var token = JSON.parse(window.localStorage['jwtToken']);
+      Object.assign(options.headers, this._httpOptions.headers, this.needAuth ? { Authorization: token ? 'Bearer ' + token : null } : {});
 
       return options;
     }
