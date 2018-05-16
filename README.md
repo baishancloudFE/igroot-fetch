@@ -61,7 +61,7 @@ restApi.delete(resourceUrl)
 
 ```jsx
 import igrootFetch from 'igroot-fetch'
-const graphQLApi = igrootFetch(host+'/graghql',{
+const graphQLApi = igrootFetch(host+'/graphql',{
     handleHttpErrors: function (response) {
         notification.error({ message: 'Http Error', description: response.statusText })
         if (response.status === 401) {
@@ -105,6 +105,7 @@ graphQLApi.mutate(`
 
 - 若 graphQL 接口有分支
   - 例如，请求路径为 APP_CONFIG.default.apiDomain + '/graphql'，当前请求的是该接口的cmdb分支，则请求地址写成 APP_CONFIG.default.apiDomain + '/graphql/{type}/cmdb'
+  > 备注：{type} 是 ``` query ``` 或者 ``` mutation ``` 这两个关键字的占位符
 - 发送请求时需要携带 cookie
   - 为 BsFetch 添加第二个参数：
     

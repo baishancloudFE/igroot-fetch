@@ -27,14 +27,23 @@ function lokkaFactory(url, options) {
 function clientHandle(url) {
   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  if (url.indexOf(placeholder) === -1) url += '/' + placeholder;
+  var mutation = void 0,
+      query = void 0;
 
-  var mutation = lokkaFactory(url.replace(placeholder, 'mutation'), options);
+  // 是否需要 query 或 mutation 这两个关键字
+  var needType = typeof options.needType === 'boolean' ? options.needType : true;
 
-  delete options.handleSuccess;
+  if (needType) {
+    if (url.indexOf(placeholder) === -1) url += '/' + placeholder;
 
-  var query = lokkaFactory(url.replace(placeholder, 'query'), options);
-
+    mutation = lokkaFactory(url.replace(placeholder, 'mutation'), options);
+    delete options.handleSuccess;
+    query = lokkaFactory(url.replace(placeholder, 'query'), options);
+  } else {
+    mutation = lokkaFactory(url, options);
+    delete options.handleSuccess;
+    query = lokkaFactory(url, options);
+  }
   /**
    * 双重作用域变换
    *
@@ -48,14 +57,13 @@ function clientHandle(url) {
   return query;
 }
 
-var GraphQL = exports.GraphQL = function GraphQL(url, client) {
+var GraphQL = exports.GraphQL = function GraphQL(url, config) {
   _classCallCheck(this, GraphQL);
 
-  var type = typeof client === 'undefined' ? 'undefined' : _typeof(client);
+  var type = typeof config === 'undefined' ? 'undefined' : _typeof(config);
 
-  // 无 GraphQL 接口
   if (type === undefined) return;
-  return clientHandle(url, client);
+  return clientHandle(url, config);
 
   throw new TypeError('GraphQL Client configuration error!');
 };

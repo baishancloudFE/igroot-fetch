@@ -1,66 +1,18 @@
 # 更新日志：
-- 1.2.2：去除默认的网络报错处理，改由用户自己设置handleHttpErrors函数来做报错处理
-    
-    使用姿势：
+- 1.2.2
+    - 去除默认的网络报错处理，改由用户自己设置handleHttpErrors函数来做报错处理 
 
-    ``` javascript
-    import Fetch from 'igroot-fetch'
-    const igrootFetch = Fetch('/v1/contract/auditConfig', {
-        headers: {
-            Authorization: 'xxxx'
-        },
-        handleHttpErrors: function (res) {
-            if (res.code !== 0) {
-                console.log(res)
-            }
-        },
-    })
-    igrootFetch.post({}).then(res => {
-        console.log(123)
-    })
-    ``` 
+- 1.2.3
+    - 在返回结果中加上分页信息
 
-    推荐使用姿势：
-    ``` javascript
-    // 先全局引入
-    import Fetch from 'igroot-fetch'
+- 1.3.0
+    - token实时从 localStorage 中读取
 
-    Fetch.setDomain({
-        "http://server.xx.com": /localhost|172\.18\.11\.11/,
-    })
-    // 或者
-    Fetch.setDomain("http://server.xx.com")
+- 1.3.1
+    - restful部分改用axios；
 
-    // 针对 graphql 请求
-    window.Client = Fetch('/graphql',{
-        headers: {
-            Authorization: 'xxxx'
-        },
-        handleHttpErrors: function (res) {
-            if (res.code !== 0) {
-                console.log(res)
-            }
-        },
-    })
-    // 然后在项目中直接使用
-    Client.query(`xxxx`).then(res=>{})
+- 1.3.2
+    - 添加 needType 配置项，用于判断发送请求时是否需要在请求地址后面添加 ``` query ``` 或者 ``` mutation ``` 这两个关键字的占位符
 
-    // 针对restful请求
-    const igrootFetch = Fetch('/v1/contract/auditConfig', {
-        headers: {
-            Authorization: 'xxxx'
-        },
-        handleHttpErrors: function (res) {
-            if (res.code !== 0) {
-                console.log(res)
-            }
-        },
-    })
-    igrootFetch.post({}).then(res => {})
-    ``` 
-
-- 1.2.3：在返回结果中加上分页信息
-
-- 1.3.0：token实时从localStorage中读取
-
-- 1.3.1：restful部分改用axios；
+- 1.3.3
+    - 修复 localStorage 中不存在 token 时获取失败的容错处理
