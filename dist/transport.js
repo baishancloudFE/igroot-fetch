@@ -39,6 +39,15 @@ function handleGraphQLErrors(errors, data) {
   error.rawData = data;
   throw error;
 }
+// 业务自定义的错误处理
+function handleErrors(responese) {
+  var data = responese.data,
+      code = responese.code,
+      msg = responese.msg;
+
+  var error = new Error('Error: ' + msg);
+  throw error;
+}
 
 var Transport = exports.Transport = function (_LokkaTransport) {
   _inherits(Transport, _LokkaTransport);
@@ -66,6 +75,8 @@ var Transport = exports.Transport = function (_LokkaTransport) {
 
     _this.needAuth = typeof options.needAuth === 'boolean' ? options.needAuth : true;
     _this.extra = { pagination: {} };
+    _this.handleErrors = options.handleErrors || handleErrors;
+    // this.errType = options.errType || 'old'
     return _this;
   }
 
@@ -110,22 +121,38 @@ var Transport = exports.Transport = function (_LokkaTransport) {
           _this2.extra.pagination[key] = val;
         });
         // end
-
         return response.json();
-      }).then(function (_ref) {
-        var data = _ref.data,
-            errors = _ref.errors;
-
-        // GraphQL 错误处理
-        if (errors) {
-          _this2.handleGraphQLErrors(errors, data);
-          return null;
+      }).then(function (responese) {
+        if (responese.code && responese.code !== 0) {
+          _this2.handleErrors(responese);
+        } else if (responese.errors) {
+          _this2.handleGraphQLErrors(responese.errors, responese.data);
         } else {
-          _this2.handleSuccess(data);
+          _this2.handleSuccess(responese);
         }
 
+        // switch (this.errType) {
+        //   case 'old':
+        //     // 旧框架会返回GraphQL 错误：GraphQL 错误处理
+        //     const { data, errors } = responese
+        //     if (errors) {
+        //       this.handleGraphQLErrors(errors, data)
+        //     } else { this.handleSuccess(data) }
+        //     break;
+        //   case 'new':
+        //     // 新的后端框架不返回GraphQL错误
+        //     const { data: resultData, code, msg } = responese
+        //     if (code !== 0) {
+        //       this.handleErrors(responese)
+        //     } else { this.handleSuccess(resultData) }
+        //     break;
+        //   default:
+        //     console.log('未指定正确的框架！')
+        //     break;
+        // }
+
         //返回所需数据和头部信息
-        return Object.assign(data, _this2.extra);
+        return Object.assign(responese, _this2.extra);
         // return data
       }).catch(function (err) {
         return _this2.handleNetErrors(err);
