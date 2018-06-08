@@ -26,7 +26,6 @@ function handleNetErrors(error) {
 
 // 默认 HTTP 错误处理
 function handleHttpErrors(response) {
-  console.log(response);
   throw new Error('Invalid status code: ' + response.status);
 }
 
@@ -127,29 +126,10 @@ var Transport = exports.Transport = function (_LokkaTransport) {
           _this2.handleErrors(responese);
         } else if (responese.errors) {
           _this2.handleGraphQLErrors(responese.errors, responese.data);
+          // return Promise.reject(responese)
         } else {
           _this2.handleSuccess(responese);
         }
-
-        // switch (this.errType) {
-        //   case 'old':
-        //     // 旧框架会返回GraphQL 错误：GraphQL 错误处理
-        //     const { data, errors } = responese
-        //     if (errors) {
-        //       this.handleGraphQLErrors(errors, data)
-        //     } else { this.handleSuccess(data) }
-        //     break;
-        //   case 'new':
-        //     // 新的后端框架不返回GraphQL错误
-        //     const { data: resultData, code, msg } = responese
-        //     if (code !== 0) {
-        //       this.handleErrors(responese)
-        //     } else { this.handleSuccess(resultData) }
-        //     break;
-        //   default:
-        //     console.log('未指定正确的框架！')
-        //     break;
-        // }
 
         //返回所需数据和头部信息
         return Object.assign(responese, _this2.extra);

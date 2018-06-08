@@ -16,3 +16,10 @@
 
 - 1.3.3
     - 修复 localStorage 中不存在 token 时获取失败的容错处理
+- 1.3.10
+    - 修复 localStorage 中不存在 token 时获取失败的容错处理；添加 needType 配置项
+
+- 1.4.0
+    - 恢复setDomain方法
+- 1.4.1
+    - 去掉打印日志的语句

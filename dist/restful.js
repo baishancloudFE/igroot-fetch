@@ -51,7 +51,5 @@ var RESTful = exports.RESTful = function RESTful(url, config) {
     return Promise.reject(err);
   });
 
-  // console.log(axios)
-
   return rest;
 };
