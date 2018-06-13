@@ -21,5 +21,10 @@
 
 - 1.4.0
     - 恢复setDomain方法
+
 - 1.4.1
     - 去掉打印日志的语句
+
+- 1.4.2
+    - 增加 returnCompleteResponse 配置项：满足响应的code为0需要取得完整响应体的需求
+    - 增加 getDomain 方法，取得 domain 变量

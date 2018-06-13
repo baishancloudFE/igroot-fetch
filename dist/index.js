@@ -69,5 +69,8 @@ Fetch.setDomain = function setDomain(domain) {
 
   throw new TypeError('\'domain\' type must be a string or object!');
 };
+Fetch.getDomain = function getDomain() {
+  return defaultDomain;
+};
 
 exports.default = Fetch;

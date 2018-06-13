@@ -72,6 +72,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
     _this.handleGraphQLErrors = options.handleGraphQLErrors || handleGraphQLErrors;
     _this.handleSuccess = options.handleSuccess || function () {};
 
+    _this.returnCompleteResponse = typeof options.returnCompleteResponse === 'boolean' ? options.needAuth : false; //code为0时是否返回完整的响应体
     _this.needAuth = typeof options.needAuth === 'boolean' ? options.needAuth : true;
     _this.extra = { pagination: {} };
     _this.handleErrors = options.handleErrors || handleErrors;
@@ -128,11 +129,13 @@ var Transport = exports.Transport = function (_LokkaTransport) {
           _this2.handleGraphQLErrors(responese.errors, responese.data);
           // return Promise.reject(responese)
         } else {
-          _this2.handleSuccess(responese);
+          var item = _this2.returnCompleteResponse ? responese : responese.data;
+          _this2.handleSuccess(item);
         }
 
         //返回所需数据和头部信息
-        return Object.assign(responese, _this2.extra);
+        var result = _this2.returnCompleteResponse ? Object.assign(responese, _this2.extra) : Object.assign(responese.data, _this2.extra);
+        return result;
         // return data
       }).catch(function (err) {
         return _this2.handleNetErrors(err);
