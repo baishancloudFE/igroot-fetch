@@ -74,7 +74,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
 
     _this.returnCompleteResponse = typeof options.returnCompleteResponse === 'boolean' ? options.needAuth : false; //code为0时是否返回完整的响应体
     _this.needAuth = typeof options.needAuth === 'boolean' ? options.needAuth : true;
-    _this.extra = { pagination: {} };
+    // this.extra = { pagination: {} }
     _this.handleErrors = options.handleErrors || handleErrors;
     // this.errType = options.errType || 'old'
     return _this;
@@ -110,15 +110,15 @@ var Transport = exports.Transport = function (_LokkaTransport) {
 
       var payload = { query: query, variables: variables, operationName: operationName };
       var options = this._buildOptions(payload);
+      var extra = { pagination: {} };
 
       return fetch(this.endpoint, options).then(function (response) {
         // HTTP 错误处理
         if (response.status !== 200) _this2.handleHttpErrors(response);
 
         // 获取头部分页信息
-        _this2.extra.pagination = {};
         response.headers.forEach(function (val, key) {
-          _this2.extra.pagination[key] = val;
+          extra.pagination[key] = val;
         });
         // end
         return response.json();
@@ -134,7 +134,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
         }
 
         //返回所需数据和头部信息
-        var result = _this2.returnCompleteResponse ? Object.assign(responese, _this2.extra) : Object.assign(responese.data, _this2.extra);
+        var result = _this2.returnCompleteResponse ? Object.assign(responese, extra) : Object.assign(responese.data || {}, extra);
         return result;
         // return data
       }).catch(function (err) {

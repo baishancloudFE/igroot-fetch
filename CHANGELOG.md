@@ -28,3 +28,6 @@
 - 1.4.2
     - 增加 returnCompleteResponse 配置项：满足响应的code为0需要取得完整响应体的需求
     - 增加 getDomain 方法，取得 domain 变量
+
+- 1.4.3
+    - 修复 将extra变量移到send函数内部
