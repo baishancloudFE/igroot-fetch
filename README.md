@@ -170,3 +170,7 @@ function handleErrors(res) {
 ```
     如果您要将您的igroot-fetch版本由V1.4.5之前升级为
     V1.5.1以后，只需要将您配置项中的 handleGraphQLErrors 改为 handleErrors ，并将您在 handleGraphQLErrors 中使用的 errors, data 取消，改为使用{code,data,msg}来定义您的错误处理方式 即可
+
+#### 升级日志
+
+[升级日志](./CHANGELOG.md)
