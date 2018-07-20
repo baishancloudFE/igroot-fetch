@@ -5,11 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Transport = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _transport = require('lokka/transport');
 
 var _transport2 = _interopRequireDefault(_transport);
+
+var _axios = require('axios');
+
+var _axios2 = _interopRequireDefault(_axios);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19,135 +25,162 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// 默认网络错误处理
-function handleNetErrors(error) {
-  throw error;
-}
+var CancelToken = _axios2.default.CancelToken;
 
-// 默认 HTTP 错误处理
+// 默认 HTTP 错误处理: 状态码不为200 的错误
 function handleHttpErrors(response) {
-  throw new Error('Invalid status code: ' + response.status);
+  if (response.status && response.status !== 200) {
+    throw new Error(response);
+  }
 }
+// 默认 业务 错误处理: code不为0 的错误
+function handleErrors(res) {
+  if (res.code && res.code !== 0) {
+    if (res.msg) {
+      // 新后端框架的报错方式{code,data,mag}
+      var errText = res.msg || '业务错误!';
+      throw new Error(errText);
+    } else {
+      if (res.errors) {
+        // 旧后端框架的报错方式{code,data,errors}
+        var message = res.errors[0].message;
 
-// 默认 GraphQL 错误处理
-function handleGraphQLErrors(errors, data) {
-  var message = errors[0].message;
-
-  var error = new Error('GraphQL Error: ' + message);
-  error.rawError = errors;
-  error.rawData = data;
-  throw error;
+        var error = new Error('GraphQL Error: ' + message);
+        error.rawError = res.errors;
+        error.rawData = res.data;
+        throw error;
+      }
+    }
+  }
 }
-// 业务自定义的错误处理
-function handleErrors(responese) {
-  var data = responese.data,
-      code = responese.code,
-      msg = responese.msg;
+// 默认 网络 错误处理: 网络错误，正式请求没有发出
+function handleNetErrors(err) {
+  throw new Error('网络错误!');
+}
+// 请求成功：请求成功后的反馈
+function handleSuccess() {}
 
-  var error = new Error('Error: ' + msg);
-  throw error;
+var defaultOptions = {
+  Authorization: '',
+  timeout: 1000,
+  withCredentials: true, //发送请求时是否携带cookie
+  needAuth: true, //需要 Authorization认证信息
+  handleHttpErrors: handleHttpErrors,
+  handleErrors: handleErrors,
+  handleNetErrors: handleNetErrors,
+  handleSuccess: handleSuccess
+
+  // 打印调试日志的开关（只有在LocalStorage中把 displayLog 设置为 true 才可以查看日志）
+};function log() {
+  var displayLog = JSON.parse(localStorage.getItem('displayLog') || false);
+  if (displayLog) {
+    var _console;
+
+    (_console = console).log.apply(_console, arguments);
+  }
 }
 
 var Transport = exports.Transport = function (_LokkaTransport) {
   _inherits(Transport, _LokkaTransport);
 
-  function Transport(endpoint) {
+  function Transport(url) {
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, Transport);
 
-    if (!endpoint) throw new Error('endpoint is required!');
+    if (!url) throw new Error('缺少 baseurl!');
 
     var _this = _possibleConstructorReturn(this, (Transport.__proto__ || Object.getPrototypeOf(Transport)).call(this));
 
-    _this._httpOptions = {
-      auth: options.auth,
-      headers: options.headers || {},
-      credentials: options.credentials
-    };
+    var newOptions = _extends({}, defaultOptions, options);
+    _this.graphqlApi = _axios2.default.create(_extends({
+      baseURL: url
+    }, newOptions));
 
-    _this.endpoint = endpoint;
-    _this.handleNetErrors = options.handleNetErrors || handleNetErrors;
-    _this.handleHttpErrors = options.handleHttpErrors || handleHttpErrors;
-    _this.handleGraphQLErrors = options.handleGraphQLErrors || handleGraphQLErrors;
-    _this.handleSuccess = options.handleSuccess || function () {};
+    // http request 拦截器
+    _this.graphqlApi.interceptors.request.use(function (config) {
+      if (newOptions.needAuth) {
+        if (newOptions.Authorization) {
+          config.headers.Authorization = newOptions.Authorization;
+        } else {
+          var token = JSON.parse(window.localStorage['jwtToken'] || null);
+          // 判断是否存在token，如果存在的话，则每个http header都加上token
+          if (token) {
+            config.headers.Authorization = 'Bearer ' + token;
+          }
+        }
+      }
+      log(config);
+      return config;
+    }, function (err) {
+      return Promise.reject(err);
+    });
 
-    _this.returnCompleteResponse = typeof options.returnCompleteResponse === 'boolean' ? options.needAuth : false; //code为0时是否返回完整的响应体
-    _this.needAuth = typeof options.needAuth === 'boolean' ? options.needAuth : true;
-    // this.extra = { pagination: {} }
-    _this.handleErrors = options.handleErrors || handleErrors;
-    // this.errType = options.errType || 'old'
+    // http response 拦截器
+    _this.graphqlApi.interceptors.response.use(function (response) {
+      var extra = { pagination: {} };
+
+      var res = response.data,
+          status = response.status;
+
+      if (status !== 200) {
+        newOptions.handleHttpErrors(response);
+        return Promise.reject(response);
+      } else {
+        if (res.code && res.code !== 0) {
+          newOptions.handleErrors(res);
+          return Promise.reject(res);
+        } else {
+          // 获取头部分页信息
+          Object.keys(response.headers).forEach(function (key) {
+            if (key.indexOf('pagination') >= 0) {
+              extra.pagination[key] = response.headers[key];
+            }
+          });
+          // end
+          newOptions.handleSuccess();
+        }
+      }
+
+      var result = res;
+      if (Object.keys(extra.pagination).length > 0) {
+        result = _extends({}, res, extra);
+      }
+
+      return result;
+    }, function (err) {
+      newOptions.handleNetErrors(err);
+      return Promise.reject(err);
+    });
+
+    _this.cancel = '';
     return _this;
   }
 
   _createClass(Transport, [{
-    key: '_buildOptions',
-    value: function _buildOptions(payload) {
-      // 默认设置
-      var options = {
-        method: 'post',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload),
-
-        // CORS
-        credentials: 'include'
-      };
-
-      if (this._httpOptions.credentials === false) delete options.credentials;
-
-      var token = JSON.parse(window.localStorage['jwtToken'] || null);
-      Object.assign(options.headers, this._httpOptions.headers, this.needAuth ? { Authorization: token ? 'Bearer ' + token : null } : {});
-
-      return options;
-    }
-  }, {
     key: 'send',
     value: function send(query, variables, operationName) {
-      var _this2 = this;
-
       var payload = { query: query, variables: variables, operationName: operationName };
-      var options = this._buildOptions(payload);
-      var extra = { pagination: {} };
 
-      return fetch(this.endpoint, options).then(function (response) {
-        // HTTP 错误处理
-        if (response.status !== 200) _this2.handleHttpErrors(response);
+      log('send request', payload);
 
-        // 获取头部分页信息
-        response.headers.forEach(function (val, key) {
-          extra.pagination[key] = val;
-        });
-        // end
-        return response.json();
-      }).then(function (responese) {
+      var field = this;
 
-        // if (responese.code && responese.code !== 0) {
-        //   this.handleErrors(responese)
-        // }
-        // if (responese.errors) {
-        //   this.handleGraphQLErrors(responese.errors, responese.data)
-        // }
-
-        if (responese.code && responese.code !== 0) {
-          _this2.handleErrors(responese);
-        } else if (responese.errors) {
-          _this2.handleGraphQLErrors(responese.errors, responese.data);
-          // return Promise.reject(responese)
+      var res = this.graphqlApi.post('', payload, {
+        cancelToken: new CancelToken(function executor(c) {
+          field.cancel = c;
+          log('set cancel token', new Date().toString());
+        })
+      }).catch(function (thrown) {
+        if (_axios2.default.isCancel(thrown)) {
+          log('Request canceled', thrown.message);
         } else {
-          var item = _this2.returnCompleteResponse ? responese : responese.data;
-          _this2.handleSuccess(item);
+          // handle error
         }
-
-        //返回所需数据和头部信息
-        var result = _this2.returnCompleteResponse ? Object.assign(responese, extra) : Object.assign(responese.data || {}, extra);
-        return result;
-        // return data
-      }).catch(function (err) {
-        return _this2.handleNetErrors(err);
       });
+      res.cancel = this.cancel;
+
+      return res;
     }
   }]);
 
