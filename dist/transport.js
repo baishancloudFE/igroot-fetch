@@ -123,6 +123,14 @@ var Transport = exports.Transport = function (_LokkaTransport) {
         // end
         return response.json();
       }).then(function (responese) {
+
+        // if (responese.code && responese.code !== 0) {
+        //   this.handleErrors(responese)
+        // }
+        // if (responese.errors) {
+        //   this.handleGraphQLErrors(responese.errors, responese.data)
+        // }
+
         if (responese.code && responese.code !== 0) {
           _this2.handleErrors(responese);
         } else if (responese.errors) {

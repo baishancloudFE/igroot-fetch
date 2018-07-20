@@ -22,15 +22,15 @@ function handleErrors(response) {
   }
 }
 
-var RESTful = exports.RESTful = function RESTful(url, config) {
+var RESTful = exports.RESTful = function RESTful(url, options) {
   var rest = _axios2.default.create(_extends({
     baseURL: url
-  }, config));
-  var handleHttpErrors = config.handleHttpErrors || handleErrors;
+  }, options));
+  var handleHttpErrors = options.handleHttpErrors || handleErrors;
 
   // http request 拦截器
   rest.interceptors.request.use(function (config) {
-    var needAuth = typeof config.needAuth === 'boolean' ? config.needAuth : true;
+    var needAuth = typeof options.needAuth === 'boolean' ? options.needAuth : true;
     if (needAuth) {
       var token = JSON.parse(window.localStorage['jwtToken']);
       // 判断是否存在token，如果存在的话，则每个http header都加上token
@@ -46,7 +46,7 @@ var RESTful = exports.RESTful = function RESTful(url, config) {
   // http response 拦截器
   rest.interceptors.response.use(function (response) {
     handleHttpErrors(response);
-    return response;
+    return response.data;
   }, function (err) {
     return Promise.reject(err);
   });
