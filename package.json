@@ -1,6 +1,6 @@
 {
   "name": "igroot-fetch",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "iGroot 应用 API 层",
   "main": "dist/index.js",
   "scripts": {

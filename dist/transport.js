@@ -176,6 +176,7 @@ var Transport = exports.Transport = function (_LokkaTransport) {
           log('Request canceled', thrown.message);
         } else {
           // handle error
+          return Promise.reject(thrown);
         }
       });
       res.cancel = this.cancel;
